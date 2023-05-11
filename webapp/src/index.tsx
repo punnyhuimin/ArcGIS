@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Test from './Map';
+import Map from './Map';
 
 // import esriConfig from "@arcgis/core/config"
 
@@ -12,6 +12,6 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <Test />
+    <Map/>
   </React.StrictMode>
 );
