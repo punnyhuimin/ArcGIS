@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="https://js.arcgis.com/4.26/esri/themes/light/main.css">
     <script src="https://js.arcgis.com/4.26/"></script>
     <script>
-        require(["esri/config", "esri/Map", "esri/views/MapView"], 
-        function(esriConfig, Map, MapView) {
+        require(["esri/config", "esri/Map", "esri/views/MapView", "esri/Graphic"], 
+        function(esriConfig, Map, MapView, Graphic) {
             esriConfig.apiKey = "98da9ed1ebe31f67bb8e55061d4a9618f34baa3092fdca373a9eed5d91a47cc9";
         const map = new Map({
           basemap: "streets" // Basemap layer service
@@ -28,7 +28,38 @@
           zoom: 11.4, // Zoom level
           container: "viewDiv" // Div element
         });
+        view.on("click", function(event){
+          createGraphic(event.mapPoint.latitude, event.mapPoint.longitude);
         });
+
+        /*************************
+         * Create a point graphic
+         *************************/
+        function createGraphic(lat, long){
+          // First create a point geometry 
+          var point = {
+            type: "point", // autocasts as new Point()
+            longitude: long,
+            latitude: lat
+          };
+
+          // Create a symbol for drawing the point
+          var markerSymbol = {
+            type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+            color: [0,0,0]
+          };
+
+          // Create a graphic and add the geometry and symbol to it
+          var pointGraphic = new Graphic({
+            geometry: point,
+            symbol: markerSymbol
+          });
+
+          // Add the graphics to the view's graphics layer
+          view.graphics.add(pointGraphic);
+        }
+       
+      });
 
         
       </script>
