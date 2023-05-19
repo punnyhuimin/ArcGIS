@@ -12,6 +12,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.26/esri/themes/light/main.css"></link>
     <Map/>
   </React.StrictMode>
 );
