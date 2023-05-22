@@ -4,14 +4,13 @@ import Point from "@arcgis/core/geometry/Point.js";
 import Graphic from "@arcgis/core/Graphic.js";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer.js";
 import Draw from "@arcgis/core/views/draw/Draw.js";
-import DefaultUI from "@arcgis/core/views/ui/DefaultUI.js";
 import Sketch from "@arcgis/core/widgets/Sketch.js";
-import Widget from "@arcgis/core/widgets/Widget.js";
+import Polyline from "@arcgis/core/geometry/Polyline.js";
 import WebStyleSymbol from "@arcgis/core/symbols/WebStyleSymbol.js";
 import { useEffect, useRef, useState, useLayoutEffect } from "react";
 
 function Map() {
-  const apiKey = "98da9ed1ebe31f67bb8e55061d4a9618f34baa3092fdca373a9eed5d91a47cc9";
+  // const apiKey = "98da9ed1ebe31f67bb8e55061d4a9618f34baa3092fdca373a9eed5d91a47cc9";
   const mapRef: any = useRef<HTMLDivElement>(null);
   const graphicsLayer = new GraphicsLayer();
   let currentSymbol = "circle-1"
@@ -32,11 +31,27 @@ function Map() {
       });
 
 
-      const sketch = new Sketch({
-        layer: graphicsLayer,
-        view: view,
-        // graphic will be selected as soon as it is created
-        creationMode: "update"});
+        const sketch = new Sketch({
+          layer: graphicsLayer,
+          view: view,
+          // graphic will be selected as soon as it is created if creationMode is "update"
+          // creationMode: "update",
+          snappingOptions: {
+            // autocasts as SnappingOptions()
+            enabled: true,
+            // enable snapping on the graphicslayer by default
+            featureSources: [{ layer: graphicsLayer, enabled: true }]
+          },
+          visibleElements: {
+            // hide/show sketch elements
+            createTools: {
+              circle: false // hide the circle tool
+            },
+            selectionTools: {
+              "lasso-selection": true // hide the lasso-selection tool
+            }
+          }
+        });
         
         view.ui.add(sketch, "top-right");
 
@@ -85,6 +100,10 @@ function Map() {
       longitude: longitude,
       latitude: latitude
     });
+
+    console.log(createdPoint.latitude)
+    console.log(createdPoint.longitude)
+    
     const createPointGraphic = new Graphic({
       geometry: createdPoint,
       symbol: (new WebStyleSymbol({
@@ -94,6 +113,17 @@ function Map() {
     });
     view.graphics.add(createPointGraphic);
   }
+
+  // // Create a line graphic
+  // const line = new Polyline({
+  //   paths: [[[x1, y1], [x2, y2]]],
+  //   spatialReference: view.spatialReference
+  // });
+
+  // const lineGraphic = new Graphic({
+  //   geometry: line,
+  //   symbol: /* specify the symbol for the line */
+  // });
 
   useEffect(() => {
     loadMap();
